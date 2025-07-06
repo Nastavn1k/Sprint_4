@@ -86,7 +86,7 @@ public class MainPage {
         waitForVisibility(answer);
     }
 
-    public void makeAnOrder(String name, String secondName, String address, String phoneNumber, String dateOfDelivery, By orderButton) {
+    public void makeAnOrder(String name, String secondName, String address, String phoneNumber, String dateOfDelivery, By orderButton, int numberOfStation, By numberOfRentalDays) {
         scrollToElement(orderButton);
         waitForVisibility(orderButton);
         search(orderButton).click();
@@ -95,15 +95,20 @@ public class MainPage {
         search(OrderPage.secondNameField).sendKeys(secondName);
         search(OrderPage.addressField).sendKeys(address);
         search(OrderPage.stationField).click();
-        search(OrderPage.stationField).sendKeys(Keys.ARROW_DOWN);
+        choiseStation(numberOfStation);
         search(OrderPage.stationField).sendKeys(Keys.ENTER);
         search(OrderPage.phoneField).sendKeys(phoneNumber);
         search(OrderPage.buttonNext).click();
         search(OrderPage.dateField).sendKeys(dateOfDelivery);
         search(OrderPage.dateField).sendKeys(Keys.ENTER);
         search(OrderPage.rentField).click();
-        search(OrderPage.twoDaysRent).click();
+        search(numberOfRentalDays).click();
         search(OrderPage.buttonOrder).click();
         search(OrderPage.buttonYes).click();
+    }
+    public void choiseStation (int numberOfStation){
+        for (int i = 0; i < numberOfStation; i++) {
+            search(OrderPage.stationField).sendKeys(Keys.ARROW_DOWN);
+        }
     }
 }

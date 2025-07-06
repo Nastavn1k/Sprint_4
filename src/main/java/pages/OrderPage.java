@@ -32,7 +32,7 @@ public class OrderPage {
     //Кнопка подтверждения заказа
     public static By buttonYes = By.xpath(".//button[text()='Да']");
     //Форма "Заказ оформлен"
-    public static By orderForm = By.cssSelector("[class='Order_Text__2broi']");
+    public static By orderForm = By.xpath(".//button[text()='Посмотреть статус']");
 
 
     public OrderPage(WebDriver driver) {
