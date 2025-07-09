@@ -8,8 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.MainPage;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 
 @RunWith(Parameterized.class)
 
@@ -17,7 +17,9 @@ public class DropListTests {
 
     private final By question;
     private final By answer;
-    private final String errorMessage;
+    private final String correctTextAnswer;
+    private final String errorMessageForAssertTrue = "Ответ не отображается";
+    private final String errorMessageForAssertEquals = "Тексты не совпадают";
 
     WebDriver driver;
     MainPage mainPage;
@@ -29,23 +31,29 @@ public class DropListTests {
         mainPage = new MainPage(driver);
     }
 
-    public DropListTests(By question, By answer, String errorMessage) {
+    public DropListTests(By question, By answer, String correctTextAnswer) {
         this.question = question;
         this.answer = answer;
-        this.errorMessage = errorMessage;
+        this.correctTextAnswer = correctTextAnswer;
     }
 
     @Parameterized.Parameters
     public static Object[][] getData() {
         return new Object[][] {
-            {MainPage.dropListHowMuchCost, MainPage.howMuchCostAnswer, "Ответ насчет стоимости не обнаружен"},
-            {MainPage.dropListWantFewScooters, MainPage.wantFewScootersAnswer, "Ответ насчет нескольких самокатов не обнаружен"},
-            {MainPage.dropListRentalTimeCalculated, MainPage.rentalTimeCalculatedAnswer, "Ответ насчет времени аренды не обнаружен"},
-            {MainPage.dropListOrderScooterToday, MainPage.orderScooterTodayAnswer, "Ответ насчет заказа на сегодня не обнаружен"},
-            {MainPage.dropListExtendOrder, MainPage.extendOrderAnswer, "Ответ насчет продления заказа не обнаружен"},
-            {MainPage.dropListChargerWithScooter, MainPage.chargerWithScooterAnswer, "Ответ насчет зарядки не обнаружен"},
-            {MainPage.dropListCancelingOrder, MainPage.cancelingOrderAnswer, "Ответ насчет отмены заказа не обнаружен"},
-            {MainPage.dropListFarAway, MainPage.farAwayAnswer, "Ответ насчет доставки за МКАД не обнаружен"},
+            {MainPage.getDropListHowMuchCost(), MainPage.getHowMuchCostAnswer(), "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
+            {MainPage.getDropListWantFewScooters(), MainPage.getWantFewScootersAnswer(), "Пока что у нас так: один заказ — один самокат." +
+            " Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
+            {MainPage.getDropListRentalTimeCalculated(), MainPage.getRentalTimeCalculatedAnswer(), "Допустим, вы оформляете заказ на 8 мая." +
+            " Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. " +
+            "Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."},
+            {MainPage.getDropListOrderScooterToday(), MainPage.getOrderScooterTodayAnswer(), "Только начиная с завтрашнего дня. Но скоро станем расторопнее."},
+            {MainPage.getDropListExtendOrder(), MainPage.getExtendOrderAnswer(), "Пока что нет! Но если что-то срочное — всегда можно позвонить в" +
+            " поддержку по красивому номеру 1010."},
+            {MainPage.getDropListChargerWithScooter(), MainPage.getChargerWithScooterAnswer(), "Самокат приезжает к вам с полной зарядкой. Этого" +
+            " хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится."},
+            {MainPage.getDropListCancelingOrder(), MainPage.getCancelingOrderAnswer(), "Да, пока самокат не привезли. Штрафа не будет, объяснительной" +
+            " записки тоже не попросим. Все же свои."},
+            {MainPage.getDropListFarAway(), MainPage.getFarAwayAnswer(), "Да, обязательно. Всем самокатов! И Москве, и Московской области."},
         };
     }
 
@@ -53,7 +61,9 @@ public class DropListTests {
     public void dropList() {
         mainPage.openPage();
         mainPage.openDropList(question, answer);
-        assertTrue(errorMessage, driver.findElement(answer).isDisplayed());
+        assertTrue(errorMessageForAssertTrue, mainPage.isDropListFormDisplayed(answer));
+        assertEquals(errorMessageForAssertEquals, correctTextAnswer, mainPage.getTextAnswer(answer));
+
     }
 
     @After

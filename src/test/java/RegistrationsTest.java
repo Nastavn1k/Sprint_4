@@ -25,6 +25,7 @@ public class RegistrationsTest {
     private final By numberOfRentalDays;
 
     WebDriver driver;
+    OrderPage orderPage;
     MainPage mainPage;
 
     public RegistrationsTest (String name, String secondName, String address, String phoneNumber, String dateOfDelivery, By orderButton, int numberOfStation, By numberOfRentalDays) {
@@ -41,8 +42,8 @@ public class RegistrationsTest {
     @Parameterized.Parameters
     public static Object[][] getData() {
         return new Object[][] {
-                {"Дима", "Туманов", "г. Москва", "89788888888", "07.07.2025", MainPage.orderButtonUp, 1, OrderPage.twoDaysRent},
-                {"Вова", "Зарубин", "г. Ставрополь", "89787777777", "08.07.2025", MainPage.orderButtonDown, 2, OrderPage.threeDaysRent}
+                {"Дима", "Туманов", "г. Москва", "89788888888", "07.07.2025", MainPage.getOrderButtonUp(), 1, OrderPage.getDaysRent()[0][0]},
+                {"Вова", "Зарубин", "г. Ставрополь", "89787777777", "08.07.2025", MainPage.getOrderButtonDown(), 2, OrderPage.getDaysRent()[1][0]}
         };
     }
 
@@ -50,14 +51,15 @@ public class RegistrationsTest {
     public void startUp() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
+        orderPage = new OrderPage(driver);
         mainPage = new MainPage(driver);
     }
 
     @Test
     public void makeOrder() {
         mainPage.openPage();
-        mainPage.makeAnOrder(name, secondName, address, phoneNumber, dateOfDelivery, orderButton, numberOfStation, numberOfRentalDays);
-        assertTrue(driver.findElement(OrderPage.orderForm).isDisplayed());
+        orderPage.makeAnOrder(name, secondName, address, phoneNumber, dateOfDelivery, orderButton, numberOfStation, numberOfRentalDays);
+        assertTrue(orderPage.isOrderFormDisplayed());
     }
 
     @After

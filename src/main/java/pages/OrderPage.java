@@ -1,11 +1,12 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 
-public class OrderPage {
+public class OrderPage extends BasePage{
 
-    WebDriver driver;
+    public OrderPage(WebDriver driver) {
+        super(driver);
+    }
 
     //Ввести имя
     public static By nameField = By.cssSelector("input[placeholder='* Имя']");
@@ -23,20 +24,53 @@ public class OrderPage {
     public static By dateField = By.cssSelector("input[placeholder='* Когда привезти самокат']");
     //Выбрать срок аренды
     public static By rentField = By.cssSelector("[class='Dropdown-placeholder']");
-    //Выбрать срок на двое суток
-    public static By twoDaysRent = By.xpath(".//div[text()='двое суток']");
-    //Выбрать срок на трое суток
-    public static By threeDaysRent = By.xpath(".//div[text()='трое суток']");
     //Кнопка заказать
     public static By buttonOrder = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Заказать']");
     //Кнопка подтверждения заказа
     public static By buttonYes = By.xpath(".//button[text()='Да']");
     //Форма "Заказ оформлен"
     public static By orderForm = By.xpath(".//button[text()='Посмотреть статус']");
+    //Выбрать срок на двое суток
+    private static final By twoDaysRent = By.xpath(".//div[text()='двое суток']");
+    //Выбрать срок на трое суток
+    private static final By threeDaysRent = By.xpath(".//div[text()='трое суток']");
 
+    public static Object[][] getDaysRent() {
+        return new Object[][] {
+                {twoDaysRent},
+                {threeDaysRent}
+        };
+    }
 
-    public OrderPage(WebDriver driver) {
-        this.driver = driver;
+    public void makeAnOrder(String name, String secondName, String address, String phoneNumber, String dateOfDelivery, By orderButton, int numberOfStation, By numberOfRentalDays) {
+        scrollToElement(orderButton);
+        waitForVisibility(orderButton);
+        search(orderButton).click();
+        waitForVisibility(OrderPage.nameField);
+        search(OrderPage.nameField).sendKeys(name);
+        search(OrderPage.secondNameField).sendKeys(secondName);
+        search(OrderPage.addressField).sendKeys(address);
+        search(OrderPage.stationField).click();
+        choiseStation(numberOfStation);
+        search(OrderPage.stationField).sendKeys(Keys.ENTER);
+        search(OrderPage.phoneField).sendKeys(phoneNumber);
+        search(OrderPage.buttonNext).click();
+        search(OrderPage.dateField).sendKeys(dateOfDelivery);
+        search(OrderPage.dateField).sendKeys(Keys.ENTER);
+        search(OrderPage.rentField).click();
+        search(numberOfRentalDays).click();
+        search(OrderPage.buttonOrder).click();
+        search(OrderPage.buttonYes).click();
+    }
+
+    public void choiseStation (int numberOfStation){
+        for (int i = 0; i < numberOfStation; i++) {
+            search(OrderPage.stationField).sendKeys(Keys.ARROW_DOWN);
+        }
+    }
+
+    public boolean isOrderFormDisplayed() {
+        return driver.findElement(orderForm).isDisplayed();
     }
 
 }
