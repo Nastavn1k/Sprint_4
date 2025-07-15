@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.MainPage;
@@ -20,21 +19,21 @@ public class RegistrationsTest {
     private final String address;
     private final String phoneNumber;
     private final String dateOfDelivery;
-    private final By orderButton;
+    private final String orderButtonPosition;
     private final int numberOfStation;
-    private final By numberOfRentalDays;
+    private final String numberOfRentalDays;
 
     WebDriver driver;
     OrderPage orderPage;
     MainPage mainPage;
 
-    public RegistrationsTest (String name, String secondName, String address, String phoneNumber, String dateOfDelivery, By orderButton, int numberOfStation, By numberOfRentalDays) {
+    public RegistrationsTest (String name, String secondName, String address, String phoneNumber, String dateOfDelivery, String orderButtonPosition, int numberOfStation, String numberOfRentalDays) {
         this.name = name;
         this.secondName = secondName;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.dateOfDelivery = dateOfDelivery;
-        this.orderButton = orderButton;
+        this.orderButtonPosition = orderButtonPosition;
         this.numberOfStation = numberOfStation;
         this.numberOfRentalDays = numberOfRentalDays;
     }
@@ -42,8 +41,8 @@ public class RegistrationsTest {
     @Parameterized.Parameters
     public static Object[][] getData() {
         return new Object[][] {
-                {"Дима", "Туманов", "г. Москва", "89788888888", "07.07.2025", MainPage.getOrderButtonUp(), 1, OrderPage.getDaysRent()[0][0]},
-                {"Вова", "Зарубин", "г. Ставрополь", "89787777777", "08.07.2025", MainPage.getOrderButtonDown(), 2, OrderPage.getDaysRent()[1][0]}
+                {"Дима", "Туманов", "г. Москва", "89788888888", "07.07.2025", "up", 1, "двое суток"},
+                {"Вова", "Зарубин", "г. Ставрополь", "89787777777", "08.07.2025", "down", 2, "двое суток"}
         };
     }
 
@@ -58,7 +57,7 @@ public class RegistrationsTest {
     @Test
     public void makeOrder() {
         mainPage.openPage();
-        orderPage.makeAnOrder(name, secondName, address, phoneNumber, dateOfDelivery, orderButton, numberOfStation, numberOfRentalDays);
+        orderPage.makeAnOrder(name, secondName, address, phoneNumber, dateOfDelivery, orderButtonPosition, numberOfStation, numberOfRentalDays);
         assertTrue(orderPage.isOrderFormDisplayed());
     }
 
